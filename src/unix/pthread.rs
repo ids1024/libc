@@ -14,7 +14,7 @@ extern {
     pub fn pthread_attr_setdetachstate(attr: *mut ::pthread_attr_t,
                                        state: ::c_int) -> ::c_int;
     pub fn pthread_detach(thread: ::pthread_t) -> ::c_int;
-    #[cfg_attr(target_os = "netbsd", link_name = "__libc_thr_yield")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__libc_thr_yield")]
     pub fn sched_yield() -> ::c_int;
     pub fn pthread_key_create(key: *mut pthread_key_t,
                               dtor: Option<unsafe extern fn(*mut ::c_void)>)

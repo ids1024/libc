@@ -419,7 +419,7 @@ extern {
     #[cfg(not(target_os = "minix"))]
     pub fn unmount(target: *const ::c_char, arg: ::c_int) -> ::c_int;
     pub fn syscall(num: ::c_int, ...) -> ::c_int;
-    #[cfg_attr(target_os = "netbsd", link_name = "__getpwent50")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__getpwent50")]
     pub fn getpwent() -> *mut passwd;
     pub fn setpwent();
     pub fn endpwent();
@@ -438,14 +438,14 @@ extern {
                       egid: *mut ::gid_t) -> ::c_int;
 
     #[cfg_attr(target_os = "macos", link_name = "glob$INODE64")]
-    #[cfg_attr(target_os = "netbsd", link_name = "__glob30")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__glob30")]
     #[cfg_attr(target_os = "freebsd", link_name = "glob@FBSD_1.0")]
     pub fn glob(pattern: *const ::c_char,
                 flags: ::c_int,
                 errfunc: Option<extern fn(epath: *const ::c_char,
                                           errno: ::c_int) -> ::c_int>,
                 pglob: *mut ::glob_t) -> ::c_int;
-    #[cfg_attr(target_os = "netbsd", link_name = "__globfree30")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__globfree30")]
     #[cfg_attr(target_os = "freebsd", link_name = "globfree@FBSD_1.0")]
     pub fn globfree(pglob: *mut ::glob_t);
 
@@ -473,7 +473,7 @@ extern {
 
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "msync$UNIX2003")]
-    #[cfg_attr(target_os = "netbsd", link_name = "__msync13")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__msync13")]
     #[cfg(not(target_os = "minix"))]
     pub fn msync(addr: *mut ::c_void, len: ::size_t, flags: ::c_int) -> ::c_int;
 
@@ -483,7 +483,7 @@ extern {
                     flags: ::c_int, addr: *mut ::sockaddr,
                     addrlen: *mut ::socklen_t) -> ::ssize_t;
     pub fn mkstemps(template: *mut ::c_char, suffixlen: ::c_int) -> ::c_int;
-    #[cfg_attr(target_os = "netbsd", link_name = "__futimes50")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__futimes50")]
     pub fn futimes(fd: ::c_int, times: *const ::timeval) -> ::c_int;
     pub fn nl_langinfo(item: ::nl_item) -> *mut ::c_char;
 
@@ -522,7 +522,7 @@ extern {
                       result: *mut *mut ::group) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "sigaltstack$UNIX2003")]
-    #[cfg_attr(target_os = "netbsd", link_name = "__sigaltstack14")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__sigaltstack14")]
     #[cfg(not(target_os = "minix"))]
     pub fn sigaltstack(ss: *const stack_t,
                        oss: *mut stack_t) -> ::c_int;
@@ -552,14 +552,14 @@ extern {
     #[cfg(not(target_os = "minix"))]
     pub fn sem_unlink(name: *const ::c_char) -> ::c_int;
     pub fn daemon(nochdir: ::c_int, noclose: ::c_int) -> ::c_int;
-    #[cfg_attr(target_os = "netbsd", link_name = "__getpwnam_r50")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__getpwnam_r50")]
     #[cfg_attr(target_os = "solaris", link_name = "__posix_getpwnam_r")]
     pub fn getpwnam_r(name: *const ::c_char,
                       pwd: *mut passwd,
                       buf: *mut ::c_char,
                       buflen: ::size_t,
                       result: *mut *mut passwd) -> ::c_int;
-    #[cfg_attr(target_os = "netbsd", link_name = "__getpwuid_r50")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__getpwuid_r50")]
     #[cfg_attr(target_os = "solaris", link_name = "__posix_getpwuid_r")]
     pub fn getpwuid_r(uid: ::uid_t,
                       pwd: *mut passwd,

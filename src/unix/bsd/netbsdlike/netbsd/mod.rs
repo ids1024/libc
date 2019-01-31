@@ -1203,7 +1203,7 @@ extern {
 
 #[link(name = "util")]
 extern {
-    #[cfg_attr(target_os = "netbsd", link_name = "__getpwent_r50")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__getpwent_r50")]
     pub fn getpwent_r(pwd: *mut ::passwd,
                       buf: *mut ::c_char,
                       buflen: ::size_t,

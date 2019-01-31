@@ -654,11 +654,11 @@ extern {
     #[cfg(not(target_os = "minix"))]
     pub fn mincore(addr: *mut ::c_void, len: ::size_t,
                    vec: *mut ::c_char) -> ::c_int;
-    #[cfg_attr(target_os = "netbsd", link_name = "__clock_getres50")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__clock_getres50")]
     pub fn clock_getres(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
-    #[cfg_attr(target_os = "netbsd", link_name = "__clock_gettime50")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__clock_gettime50")]
     pub fn clock_gettime(clk_id: ::clockid_t, tp: *mut ::timespec) -> ::c_int;
-    #[cfg_attr(target_os = "netbsd", link_name = "__clock_settime50")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__clock_settime50")]
     pub fn clock_settime(clk_id: ::clockid_t, tp: *const ::timespec) -> ::c_int;
     pub fn __errno() -> *mut ::c_int;
     #[cfg(not(target_os = "minix"))]

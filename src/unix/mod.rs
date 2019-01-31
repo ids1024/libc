@@ -125,7 +125,7 @@ s! {
         __reserved: [c_long; 16],
     }
 
-    #[cfg_attr(target_os = "netbsd", repr(packed))]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), repr(packed))]
     pub struct in_addr {
         pub s_addr: in_addr_t,
     }
@@ -427,9 +427,9 @@ extern {
     pub fn fseek(stream: *mut FILE, offset: c_long, whence: c_int) -> c_int;
     pub fn ftell(stream: *mut FILE) -> c_long;
     pub fn rewind(stream: *mut FILE);
-    #[cfg_attr(target_os = "netbsd", link_name = "__fgetpos50")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__fgetpos50")]
     pub fn fgetpos(stream: *mut FILE, ptr: *mut fpos_t) -> c_int;
-    #[cfg_attr(target_os = "netbsd", link_name = "__fsetpos50")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__fsetpos50")]
     pub fn fsetpos(stream: *mut FILE, ptr: *const fpos_t) -> c_int;
     pub fn feof(stream: *mut FILE) -> c_int;
     pub fn ferror(stream: *mut FILE) -> c_int;
@@ -501,9 +501,9 @@ extern {
 }
 
 extern {
-    #[cfg_attr(target_os = "netbsd", link_name = "__getpwnam50")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__getpwnam50")]
     pub fn getpwnam(name: *const ::c_char) -> *mut passwd;
-    #[cfg_attr(target_os = "netbsd", link_name = "__getpwuid50")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__getpwuid50")]
     pub fn getpwuid(uid: ::uid_t) -> *mut passwd;
 
     pub fn fprintf(stream: *mut ::FILE,
@@ -518,7 +518,7 @@ extern {
     pub fn getchar_unlocked() -> ::c_int;
     pub fn putchar_unlocked(c: ::c_int) -> ::c_int;
 
-    #[cfg_attr(target_os = "netbsd", link_name = "__socket30")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__socket30")]
     pub fn socket(domain: ::c_int, ty: ::c_int, protocol: ::c_int) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "connect$UNIX2003")]
@@ -561,14 +561,14 @@ extern {
     pub fn fchmod(fd: ::c_int, mode: mode_t) -> ::c_int;
 
     #[cfg_attr(target_os = "macos", link_name = "fstat$INODE64")]
-    #[cfg_attr(target_os = "netbsd", link_name = "__fstat50")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__fstat50")]
     #[cfg_attr(target_os = "freebsd", link_name = "fstat@FBSD_1.0")]
     pub fn fstat(fildes: ::c_int, buf: *mut stat) -> ::c_int;
 
     pub fn mkdir(path: *const c_char, mode: mode_t) -> ::c_int;
 
     #[cfg_attr(target_os = "macos", link_name = "stat$INODE64")]
-    #[cfg_attr(target_os = "netbsd", link_name = "__stat50")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__stat50")]
     #[cfg_attr(target_os = "freebsd", link_name = "stat@FBSD_1.0")]
     pub fn stat(path: *const c_char, buf: *mut stat) -> ::c_int;
 
@@ -592,7 +592,7 @@ extern {
                link_name = "opendir$INODE64")]
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "opendir$INODE64$UNIX2003")]
-    #[cfg_attr(target_os = "netbsd", link_name = "__opendir30")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__opendir30")]
     pub fn opendir(dirname: *const c_char) -> *mut ::DIR;
 
     #[cfg_attr(all(target_os = "macos", target_arch = "x86_64"),
@@ -602,11 +602,11 @@ extern {
     pub fn fdopendir(fd: ::c_int) -> *mut ::DIR;
 
     #[cfg_attr(target_os = "macos", link_name = "readdir$INODE64")]
-    #[cfg_attr(target_os = "netbsd", link_name = "__readdir30")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__readdir30")]
     #[cfg_attr(target_os = "freebsd", link_name = "readdir@FBSD_1.0")]
     pub fn readdir(dirp: *mut ::DIR) -> *mut ::dirent;
     #[cfg_attr(target_os = "macos", link_name = "readdir_r$INODE64")]
-    #[cfg_attr(target_os = "netbsd", link_name = "__readdir_r30")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__readdir_r30")]
     #[cfg_attr(target_os = "solaris", link_name = "__posix_readdir_r")]
     #[cfg_attr(target_os = "freebsd", link_name = "readdir_r@FBSD_1.0")]
     pub fn readdir_r(dirp: *mut ::DIR, entry: *mut ::dirent,
@@ -736,7 +736,7 @@ extern {
     pub fn sleep(secs: ::c_uint) -> ::c_uint;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "nanosleep$UNIX2003")]
-    #[cfg_attr(target_os = "netbsd", link_name = "__nanosleep50")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__nanosleep50")]
     pub fn nanosleep(rqtp: *const timespec,
                      rmtp: *mut timespec) -> ::c_int;
     pub fn tcgetpgrp(fd: ::c_int) -> pid_t;
@@ -764,7 +764,7 @@ extern {
                   offset: off_t) -> ::ssize_t;
     pub fn umask(mask: mode_t) -> mode_t;
 
-    #[cfg_attr(target_os = "netbsd", link_name = "__utime50")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__utime50")]
     pub fn utime(file: *const c_char, buf: *const utimbuf) -> ::c_int;
 
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
@@ -801,7 +801,7 @@ extern {
                           ifname: *mut ::c_char) -> *mut ::c_char;
 
     #[cfg_attr(target_os = "macos", link_name = "lstat$INODE64")]
-    #[cfg_attr(target_os = "netbsd", link_name = "__lstat50")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__lstat50")]
     #[cfg_attr(target_os = "freebsd", link_name = "lstat@FBSD_1.0")]
     pub fn lstat(path: *const c_char, buf: *mut stat) -> ::c_int;
 
@@ -815,7 +815,7 @@ extern {
                   overwrite: ::c_int) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "unsetenv$UNIX2003")]
-    #[cfg_attr(target_os = "netbsd", link_name = "__unsetenv13")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__unsetenv13")]
     pub fn unsetenv(name: *const c_char) -> ::c_int;
 
     pub fn symlink(path1: *const c_char,
@@ -832,7 +832,7 @@ extern {
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "setrlimit$UNIX2003")]
     pub fn setrlimit(resource: ::c_int, rlim: *const rlimit) -> ::c_int;
-    #[cfg_attr(target_os = "netbsd", link_name = "__getrusage50")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__getrusage50")]
     pub fn getrusage(resource: ::c_int, usage: *mut rusage) -> ::c_int;
 
     #[cfg_attr(any(target_os = "macos", target_os = "ios"),
@@ -842,10 +842,10 @@ extern {
 
     pub fn flock(fd: ::c_int, operation: ::c_int) -> ::c_int;
 
-    #[cfg_attr(target_os = "netbsd", link_name = "__gettimeofday50")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__gettimeofday50")]
     pub fn gettimeofday(tp: *mut ::timeval,
                         tz: *mut ::c_void) -> ::c_int;
-    #[cfg_attr(target_os = "netbsd", link_name = "__times13")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__times13")]
     pub fn times(buf: *mut ::tms) -> ::clock_t;
 
     #[cfg_attr(all(target_os = "linux", not(target_env = "musl")),
@@ -859,12 +859,12 @@ extern {
                       optval: *mut ::c_void,
                       optlen: *mut ::socklen_t) -> ::c_int;
     pub fn raise(signum: ::c_int) -> ::c_int;
-    #[cfg_attr(target_os = "netbsd", link_name = "__sigaction14")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__sigaction14")]
     pub fn sigaction(signum: ::c_int,
                      act: *const sigaction,
                      oldact: *mut sigaction) -> ::c_int;
 
-    #[cfg_attr(target_os = "netbsd", link_name = "__utimes50")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__utimes50")]
     pub fn utimes(filename: *const ::c_char,
                   times: *const ::timeval) -> ::c_int;
     pub fn dlopen(filename: *const ::c_char,
@@ -891,24 +891,24 @@ extern {
                link_name = "res_9_init")]
     pub fn res_init() -> ::c_int;
 
-    #[cfg_attr(target_os = "netbsd", link_name = "__gmtime_r50")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__gmtime_r50")]
     pub fn gmtime_r(time_p: *const time_t, result: *mut tm) -> *mut tm;
-    #[cfg_attr(target_os = "netbsd", link_name = "__localtime_r50")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__localtime_r50")]
     pub fn localtime_r(time_p: *const time_t, result: *mut tm) -> *mut tm;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "mktime$UNIX2003")]
-    #[cfg_attr(target_os = "netbsd", link_name = "__mktime50")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__mktime50")]
     pub fn mktime(tm: *mut tm) -> time_t;
-    #[cfg_attr(target_os = "netbsd", link_name = "__time50")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__time50")]
     pub fn time(time: *mut time_t) -> time_t;
-    #[cfg_attr(target_os = "netbsd", link_name = "__gmtime50")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__gmtime50")]
     pub fn gmtime(time_p: *const time_t) -> *mut tm;
-    #[cfg_attr(target_os = "netbsd", link_name = "__locatime50")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__locatime50")]
     pub fn localtime(time_p: *const time_t) -> *mut tm;
-    #[cfg_attr(target_os = "netbsd", link_name = "__difftime50")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__difftime50")]
     pub fn difftime(time1: time_t, time0: time_t) -> ::c_double;
 
-    #[cfg_attr(target_os = "netbsd", link_name = "__mknod50")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__mknod50")]
     #[cfg_attr(target_os = "freebsd", link_name = "mknod@FBSD_1.0")]
     pub fn mknod(pathname: *const ::c_char, mode: ::mode_t,
                  dev: ::dev_t) -> ::c_int;
@@ -931,7 +931,7 @@ extern {
                 flags: ::c_int) -> ::ssize_t;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "putenv$UNIX2003")]
-    #[cfg_attr(target_os = "netbsd", link_name = "__putenv50")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__putenv50")]
     pub fn putenv(string: *mut c_char) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "poll$UNIX2003")]
@@ -940,13 +940,13 @@ extern {
                link_name = "select$1050")]
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "select$UNIX2003")]
-    #[cfg_attr(target_os = "netbsd", link_name = "__select50")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__select50")]
     pub fn select(nfds: ::c_int,
                   readfs: *mut fd_set,
                   writefds: *mut fd_set,
                   errorfds: *mut fd_set,
                   timeout: *mut timeval) -> ::c_int;
-    #[cfg_attr(target_os = "netbsd", link_name = "__setlocale50")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__setlocale50")]
     pub fn setlocale(category: ::c_int,
                      locale: *const ::c_char) -> *mut ::c_char;
     pub fn localeconv() -> *mut lconv;
@@ -958,26 +958,26 @@ extern {
                     bufsz: ::size_t)
                     -> ::ssize_t;
 
-    #[cfg_attr(target_os = "netbsd", link_name = "__sigemptyset14")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__sigemptyset14")]
     pub fn sigemptyset(set: *mut sigset_t) -> ::c_int;
-    #[cfg_attr(target_os = "netbsd", link_name = "__sigaddset14")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__sigaddset14")]
     pub fn sigaddset(set: *mut sigset_t, signum: ::c_int) -> ::c_int;
-    #[cfg_attr(target_os = "netbsd", link_name = "__sigfillset14")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__sigfillset14")]
     pub fn sigfillset(set: *mut sigset_t) -> ::c_int;
-    #[cfg_attr(target_os = "netbsd", link_name = "__sigdelset14")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__sigdelset14")]
     pub fn sigdelset(set: *mut sigset_t, signum: ::c_int) -> ::c_int;
-    #[cfg_attr(target_os = "netbsd", link_name = "__sigismember14")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__sigismember14")]
     pub fn sigismember(set: *const sigset_t, signum: ::c_int) -> ::c_int;
 
-    #[cfg_attr(target_os = "netbsd", link_name = "__sigprocmask14")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__sigprocmask14")]
     pub fn sigprocmask(how: ::c_int,
                        set: *const sigset_t,
                        oldset: *mut sigset_t)
                        -> ::c_int;
-    #[cfg_attr(target_os = "netbsd", link_name = "__sigpending14")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__sigpending14")]
     pub fn sigpending(set: *mut sigset_t) -> ::c_int;
 
-    #[cfg_attr(target_os = "netbsd", link_name = "__timegm50")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__timegm50")]
     pub fn timegm(tm: *mut ::tm) -> time_t;
 
     pub fn getsid(pid: pid_t) -> pid_t;
@@ -990,7 +990,7 @@ extern {
                link_name = "pselect$1050")]
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "pselect$UNIX2003")]
-    #[cfg_attr(target_os = "netbsd", link_name = "__pselect50")]
+    #[cfg_attr(any(target_os = "netbsd", target_os = "minix"), link_name = "__pselect50")]
     #[cfg(not(target_os = "minix"))]
     pub fn pselect(nfds: ::c_int,
                    readfs: *mut fd_set,

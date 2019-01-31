@@ -3,8 +3,6 @@
 //! More functions and definitions can be found in the more specific modules
 //! according to the platform in question.
 
-use dox::Option;
-
 pub type int8_t = i8;
 pub type int16_t = i16;
 pub type int32_t = i32;
@@ -234,7 +232,9 @@ pub const DT_SOCK: u8 = 12;
 
 pub const FD_CLOEXEC: ::c_int = 0x1;
 
+#[cfg(not(target_os = "minix"))]
 pub const USRQUOTA: ::c_int = 0;
+#[cfg(not(target_os = "minix"))]
 pub const GRPQUOTA: ::c_int = 1;
 
 pub const SIGIOT: ::c_int = 6;
@@ -355,6 +355,9 @@ cfg_if! {
         // no_default_libraries is set to false for HermitCore, so only a link
         // to "pthread" needs to be added.
         #[link(name = "pthread")]
+        extern {}
+    } else if #[cfg(target_os = "minix")] {
+        #[link(name = "mthread")]
         extern {}
     } else {
         #[link(name = "c")]
@@ -617,32 +620,42 @@ extern {
                link_name = "rewinddir$INODE64$UNIX2003")]
     pub fn rewinddir(dirp: *mut ::DIR);
 
+    #[cfg(not(target_os = "minix"))]
     pub fn openat(dirfd: ::c_int, pathname: *const ::c_char,
                   flags: ::c_int, ...) -> ::c_int;
+    #[cfg(not(target_os = "minix"))]
     pub fn fchmodat(dirfd: ::c_int, pathname: *const ::c_char,
                     mode: ::mode_t, flags: ::c_int) -> ::c_int;
     pub fn fchown(fd: ::c_int,
                   owner: ::uid_t,
                   group: ::gid_t) -> ::c_int;
+    #[cfg(not(target_os = "minix"))]
     pub fn fchownat(dirfd: ::c_int, pathname: *const ::c_char,
                     owner: ::uid_t, group: ::gid_t,
                     flags: ::c_int) -> ::c_int;
     #[cfg_attr(target_os = "macos", link_name = "fstatat$INODE64")]
     #[cfg_attr(target_os = "freebsd", link_name = "fstatat@FBSD_1.1")]
+    #[cfg(not(target_os = "minix"))]
     pub fn fstatat(dirfd: ::c_int, pathname: *const ::c_char,
                    buf: *mut stat, flags: ::c_int) -> ::c_int;
+    #[cfg(not(target_os = "minix"))]
     pub fn linkat(olddirfd: ::c_int, oldpath: *const ::c_char,
                   newdirfd: ::c_int, newpath: *const ::c_char,
                   flags: ::c_int) -> ::c_int;
+    #[cfg(not(target_os = "minix"))]
     pub fn mkdirat(dirfd: ::c_int, pathname: *const ::c_char,
                    mode: ::mode_t) -> ::c_int;
+    #[cfg(not(target_os = "minix"))]
     pub fn readlinkat(dirfd: ::c_int, pathname: *const ::c_char,
                       buf: *mut ::c_char, bufsiz: ::size_t) -> ::ssize_t;
+    #[cfg(not(target_os = "minix"))]
     pub fn renameat(olddirfd: ::c_int, oldpath: *const ::c_char,
                     newdirfd: ::c_int, newpath: *const ::c_char)
                     -> ::c_int;
+    #[cfg(not(target_os = "minix"))]
     pub fn symlinkat(target: *const ::c_char, newdirfd: ::c_int,
                      linkpath: *const ::c_char) -> ::c_int;
+    #[cfg(not(target_os = "minix"))]
     pub fn unlinkat(dirfd: ::c_int, pathname: *const ::c_char,
                     flags: ::c_int) -> ::c_int;
 
@@ -689,6 +702,8 @@ extern {
                link_name = "getopt$UNIX2003")]
     pub fn getopt(argc: ::c_int, argv: *const *mut c_char,
                   optstr: *const c_char) -> ::c_int;
+
+    #[cfg(not(target_os = "minix"))]
     pub fn getpgid(pid: pid_t) -> pid_t;
     pub fn getpgrp() -> pid_t;
     pub fn getpid() -> pid_t;
@@ -759,9 +774,13 @@ extern {
                link_name = "killpg$UNIX2003")]
     pub fn killpg(pgrp: pid_t, sig: ::c_int) -> ::c_int;
 
+    #[cfg(not(target_os = "minix"))]
     pub fn mlock(addr: *const ::c_void, len: ::size_t) -> ::c_int;
+    #[cfg(not(target_os = "minix"))]
     pub fn munlock(addr: *const ::c_void, len: ::size_t) -> ::c_int;
+    #[cfg(not(target_os = "minix"))]
     pub fn mlockall(flags: ::c_int) -> ::c_int;
+    #[cfg(not(target_os = "minix"))]
     pub fn munlockall() -> ::c_int;
 
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
@@ -829,85 +848,6 @@ extern {
     #[cfg_attr(target_os = "netbsd", link_name = "__times13")]
     pub fn times(buf: *mut ::tms) -> ::clock_t;
 
-    pub fn pthread_self() -> ::pthread_t;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "pthread_join$UNIX2003")]
-    pub fn pthread_join(native: ::pthread_t,
-                        value: *mut *mut ::c_void) -> ::c_int;
-    pub fn pthread_exit(value: *mut ::c_void);
-    pub fn pthread_attr_init(attr: *mut ::pthread_attr_t) -> ::c_int;
-    pub fn pthread_attr_destroy(attr: *mut ::pthread_attr_t) -> ::c_int;
-    pub fn pthread_attr_setstacksize(attr: *mut ::pthread_attr_t,
-                                     stack_size: ::size_t) -> ::c_int;
-    pub fn pthread_attr_setdetachstate(attr: *mut ::pthread_attr_t,
-                                       state: ::c_int) -> ::c_int;
-    pub fn pthread_detach(thread: ::pthread_t) -> ::c_int;
-    #[cfg_attr(target_os = "netbsd", link_name = "__libc_thr_yield")]
-    pub fn sched_yield() -> ::c_int;
-    pub fn pthread_key_create(key: *mut pthread_key_t,
-                              dtor: Option<unsafe extern fn(*mut ::c_void)>)
-                              -> ::c_int;
-    pub fn pthread_key_delete(key: pthread_key_t) -> ::c_int;
-    pub fn pthread_getspecific(key: pthread_key_t) -> *mut ::c_void;
-    pub fn pthread_setspecific(key: pthread_key_t, value: *const ::c_void)
-                               -> ::c_int;
-    pub fn pthread_mutex_init(lock: *mut pthread_mutex_t,
-                              attr: *const pthread_mutexattr_t) -> ::c_int;
-    pub fn pthread_mutex_destroy(lock: *mut pthread_mutex_t) -> ::c_int;
-    pub fn pthread_mutex_lock(lock: *mut pthread_mutex_t) -> ::c_int;
-    pub fn pthread_mutex_trylock(lock: *mut pthread_mutex_t) -> ::c_int;
-    pub fn pthread_mutex_unlock(lock: *mut pthread_mutex_t) -> ::c_int;
-
-    pub fn pthread_mutexattr_init(attr: *mut pthread_mutexattr_t) -> ::c_int;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "pthread_mutexattr_destroy$UNIX2003")]
-    pub fn pthread_mutexattr_destroy(attr: *mut pthread_mutexattr_t) -> ::c_int;
-    pub fn pthread_mutexattr_settype(attr: *mut pthread_mutexattr_t,
-                                     _type: ::c_int) -> ::c_int;
-
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "pthread_cond_init$UNIX2003")]
-    pub fn pthread_cond_init(cond: *mut pthread_cond_t,
-                             attr: *const pthread_condattr_t) -> ::c_int;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "pthread_cond_wait$UNIX2003")]
-    pub fn pthread_cond_wait(cond: *mut pthread_cond_t,
-                             lock: *mut pthread_mutex_t) -> ::c_int;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "pthread_cond_timedwait$UNIX2003")]
-    pub fn pthread_cond_timedwait(cond: *mut pthread_cond_t,
-                              lock: *mut pthread_mutex_t,
-                              abstime: *const ::timespec) -> ::c_int;
-    pub fn pthread_cond_signal(cond: *mut pthread_cond_t) -> ::c_int;
-    pub fn pthread_cond_broadcast(cond: *mut pthread_cond_t) -> ::c_int;
-    pub fn pthread_cond_destroy(cond: *mut pthread_cond_t) -> ::c_int;
-    pub fn pthread_condattr_init(attr: *mut pthread_condattr_t) -> ::c_int;
-    pub fn pthread_condattr_destroy(attr: *mut pthread_condattr_t) -> ::c_int;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "pthread_rwlock_init$UNIX2003")]
-    pub fn pthread_rwlock_init(lock: *mut pthread_rwlock_t,
-                               attr: *const pthread_rwlockattr_t) -> ::c_int;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "pthread_rwlock_destroy$UNIX2003")]
-    pub fn pthread_rwlock_destroy(lock: *mut pthread_rwlock_t) -> ::c_int;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "pthread_rwlock_rdlock$UNIX2003")]
-    pub fn pthread_rwlock_rdlock(lock: *mut pthread_rwlock_t) -> ::c_int;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "pthread_rwlock_tryrdlock$UNIX2003")]
-    pub fn pthread_rwlock_tryrdlock(lock: *mut pthread_rwlock_t) -> ::c_int;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "pthread_rwlock_wrlock$UNIX2003")]
-    pub fn pthread_rwlock_wrlock(lock: *mut pthread_rwlock_t) -> ::c_int;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "pthread_rwlock_trywrlock$UNIX2003")]
-    pub fn pthread_rwlock_trywrlock(lock: *mut pthread_rwlock_t) -> ::c_int;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "pthread_rwlock_unlock$UNIX2003")]
-    pub fn pthread_rwlock_unlock(lock: *mut pthread_rwlock_t) -> ::c_int;
-    pub fn pthread_rwlockattr_init(attr: *mut pthread_rwlockattr_t) -> ::c_int;
-    pub fn pthread_rwlockattr_destroy(attr: *mut pthread_rwlockattr_t)
-                                      -> ::c_int;
     #[cfg_attr(all(target_os = "linux", not(target_env = "musl")),
                link_name = "__xpg_strerror_r")]
     pub fn strerror_r(errnum: ::c_int, buf: *mut c_char,
@@ -1010,17 +950,6 @@ extern {
     pub fn setlocale(category: ::c_int,
                      locale: *const ::c_char) -> *mut ::c_char;
     pub fn localeconv() -> *mut lconv;
-
-    pub fn sem_destroy(sem: *mut sem_t) -> ::c_int;
-    #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
-               link_name = "sem_wait$UNIX2003")]
-    pub fn sem_wait(sem: *mut sem_t) -> ::c_int;
-    pub fn sem_trywait(sem: *mut sem_t) -> ::c_int;
-    pub fn sem_post(sem: *mut sem_t) -> ::c_int;
-    pub fn sem_init(sem: *mut sem_t,
-                    pshared: ::c_int,
-                    value: ::c_uint)
-                    -> ::c_int;
     pub fn statvfs(path: *const c_char, buf: *mut statvfs) -> ::c_int;
     pub fn fstatvfs(fd: ::c_int, buf: *mut statvfs) -> ::c_int;
 
@@ -1062,6 +991,7 @@ extern {
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "pselect$UNIX2003")]
     #[cfg_attr(target_os = "netbsd", link_name = "__pselect50")]
+    #[cfg(not(target_os = "minix"))]
     pub fn pselect(nfds: ::c_int,
                    readfs: *mut fd_set,
                    writefds: *mut fd_set,
@@ -1087,6 +1017,7 @@ extern {
                      termios: *const ::termios) -> ::c_int;
     pub fn tcflow(fd: ::c_int, action: ::c_int) -> ::c_int;
     pub fn tcflush(fd: ::c_int, action: ::c_int) -> ::c_int;
+    #[cfg(not(target_os = "minix"))]
     pub fn tcgetsid(fd: ::c_int) -> ::pid_t;
     pub fn tcsendbreak(fd: ::c_int, duration: ::c_int) -> ::c_int;
     pub fn mkstemp(template: *mut ::c_char) -> ::c_int;
@@ -1113,6 +1044,11 @@ extern {
         stream: *mut FILE) -> ssize_t;
 }
 
+#[cfg(not(target_os = "minix"))]
+mod pthread;
+#[cfg(not(target_os = "minix"))]
+pub use self::pthread::*;
+
 cfg_if! {
     if #[cfg(target_env = "uclibc")] {
         mod uclibc;
@@ -1131,7 +1067,8 @@ cfg_if! {
                         target_os = "dragonfly",
                         target_os = "openbsd",
                         target_os = "netbsd",
-                        target_os = "bitrig"))] {
+                        target_os = "bitrig",
+                        target_os = "minix"))] {
         mod bsd;
         pub use self::bsd::*;
     } else if #[cfg(target_os = "solaris")] {

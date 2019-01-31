@@ -46,7 +46,8 @@ s! {
         #[cfg(not(any(target_os = "macos",
                       target_os = "ios",
                       target_os = "netbsd",
-                      target_os = "openbsd")))]
+                      target_os = "openbsd",
+                      target_os = "minix")))]
         pub pw_fields: ::c_int,
     }
 
@@ -148,6 +149,7 @@ pub const FIONBIO: ::c_ulong = 0x8004667e;
 pub const PATH_MAX: ::c_int = 1024;
 
 pub const SA_ONSTACK: ::c_int = 0x0001;
+#[cfg(not(target_os = "minix"))]
 pub const SA_SIGINFO: ::c_int = 0x0040;
 pub const SA_RESTART: ::c_int = 0x0002;
 pub const SA_RESETHAND: ::c_int = 0x0004;
@@ -230,8 +232,11 @@ pub const F_WRLCK: ::c_short = 3;
 
 pub const MNT_FORCE: ::c_int = 0x80000;
 
+#[cfg(not(target_os = "minix"))]
 pub const Q_SYNC: ::c_int = 0x600;
+#[cfg(not(target_os = "minix"))]
 pub const Q_QUOTAON: ::c_int = 0x100;
+#[cfg(not(target_os = "minix"))]
 pub const Q_QUOTAOFF: ::c_int = 0x200;
 
 pub const TCIOFF: ::c_int = 3;
@@ -409,7 +414,9 @@ extern {
     pub fn setgroups(ngroups: ::c_int,
                      ptr: *const ::gid_t) -> ::c_int;
     pub fn ioctl(fd: ::c_int, request: ::c_ulong, ...) -> ::c_int;
+    #[cfg(not(target_os = "minix"))]
     pub fn kqueue() -> ::c_int;
+    #[cfg(not(target_os = "minix"))]
     pub fn unmount(target: *const ::c_char, arg: ::c_int) -> ::c_int;
     pub fn syscall(num: ::c_int, ...) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__getpwent50")]
@@ -442,9 +449,11 @@ extern {
     #[cfg_attr(target_os = "freebsd", link_name = "globfree@FBSD_1.0")]
     pub fn globfree(pglob: *mut ::glob_t);
 
+    #[cfg(not(target_os = "minix"))]
     pub fn posix_madvise(addr: *mut ::c_void, len: ::size_t, advice: ::c_int)
                          -> ::c_int;
 
+    #[cfg(not(target_os = "minix"))]
     pub fn shm_unlink(name: *const ::c_char) -> ::c_int;
 
     #[cfg_attr(all(target_os = "macos", target_arch = "x86_64"),
@@ -458,12 +467,14 @@ extern {
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "telldir$INODE64$UNIX2003")]
     pub fn telldir(dirp: *mut ::DIR) -> ::c_long;
+    #[cfg(not(target_os = "minix"))]
     pub fn madvise(addr: *mut ::c_void, len: ::size_t, advice: ::c_int)
                   -> ::c_int;
 
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "msync$UNIX2003")]
     #[cfg_attr(target_os = "netbsd", link_name = "__msync13")]
+    #[cfg(not(target_os = "minix"))]
     pub fn msync(addr: *mut ::c_void, len: ::size_t, flags: ::c_int) -> ::c_int;
 
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
@@ -512,8 +523,10 @@ extern {
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "sigaltstack$UNIX2003")]
     #[cfg_attr(target_os = "netbsd", link_name = "__sigaltstack14")]
+    #[cfg(not(target_os = "minix"))]
     pub fn sigaltstack(ss: *const stack_t,
                        oss: *mut stack_t) -> ::c_int;
+    #[cfg(not(target_os = "minix"))]
     pub fn sem_close(sem: *mut sem_t) -> ::c_int;
     pub fn getdtablesize() -> ::c_int;
     #[cfg_attr(target_os = "solaris", link_name = "__posix_getgrnam_r")]
@@ -524,14 +537,19 @@ extern {
                       result: *mut *mut ::group) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "pthread_sigmask$UNIX2003")]
+    #[cfg(not(target_os = "minix"))]
     pub fn pthread_sigmask(how: ::c_int, set: *const sigset_t,
                            oldset: *mut sigset_t) -> ::c_int;
+    #[cfg(not(target_os = "minix"))]
     pub fn sem_open(name: *const ::c_char, oflag: ::c_int, ...) -> *mut sem_t;
     pub fn getgrnam(name: *const ::c_char) -> *mut ::group;
+    #[cfg(not(target_os = "minix"))]
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "pthread_cancel$UNIX2003")]
     pub fn pthread_cancel(thread: ::pthread_t) -> ::c_int;
+    #[cfg(not(target_os = "minix"))]
     pub fn pthread_kill(thread: ::pthread_t, sig: ::c_int) -> ::c_int;
+    #[cfg(not(target_os = "minix"))]
     pub fn sem_unlink(name: *const ::c_char) -> ::c_int;
     pub fn daemon(nochdir: ::c_int, noclose: ::c_int) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__getpwnam_r50")]
@@ -551,8 +569,10 @@ extern {
     #[cfg_attr(all(target_os = "macos", target_arch ="x86"),
                link_name = "sigwait$UNIX2003")]
     #[cfg_attr(target_os = "solaris", link_name = "__posix_sigwait")]
+    #[cfg(not(target_os = "minix"))]
     pub fn sigwait(set: *const sigset_t,
                    sig: *mut ::c_int) -> ::c_int;
+    #[cfg(not(target_os = "minix"))]
     pub fn pthread_atfork(prepare: Option<unsafe extern fn()>,
                           parent: Option<unsafe extern fn()>,
                           child: Option<unsafe extern fn()>) -> ::c_int;
@@ -561,12 +581,15 @@ extern {
                link_name = "popen$UNIX2003")]
     pub fn popen(command: *const c_char,
                  mode: *const c_char) -> *mut ::FILE;
+    #[cfg(not(target_os = "minix"))]
     pub fn faccessat(dirfd: ::c_int, pathname: *const ::c_char,
                      mode: ::c_int, flags: ::c_int) -> ::c_int;
+    #[cfg(not(target_os = "minix"))]
     pub fn pthread_create(native: *mut ::pthread_t,
                           attr: *const ::pthread_attr_t,
                           f: extern fn(*mut ::c_void) -> *mut ::c_void,
                           value: *mut ::c_void) -> ::c_int;
+    #[cfg(not(target_os = "minix"))]
     pub fn acct(filename: *const ::c_char) -> ::c_int;
 }
 
@@ -575,7 +598,7 @@ cfg_if! {
         mod apple;
         pub use self::apple::*;
     } else if #[cfg(any(target_os = "openbsd", target_os = "netbsd",
-                        target_os = "bitrig"))] {
+                        target_os = "bitrig", target_os = "minix"))] {
         mod netbsdlike;
         pub use self::netbsdlike::*;
     } else if #[cfg(any(target_os = "freebsd", target_os = "dragonfly"))] {

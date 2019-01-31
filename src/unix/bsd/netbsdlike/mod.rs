@@ -313,7 +313,9 @@ pub const POSIX_MADV_SEQUENTIAL : ::c_int = 2;
 pub const POSIX_MADV_WILLNEED : ::c_int = 3;
 pub const POSIX_MADV_DONTNEED : ::c_int = 4;
 
+#[cfg(not(target_os = "minix"))]
 pub const PTHREAD_CREATE_JOINABLE : ::c_int = 0;
+#[cfg(not(target_os = "minix"))]
 pub const PTHREAD_CREATE_DETACHED : ::c_int = 1;
 
 pub const PT_TRACE_ME: ::c_int = 0;
@@ -510,7 +512,9 @@ pub const _SC_PAGE_SIZE: ::c_int = _SC_PAGESIZE;
 pub const _SC_FSYNC : ::c_int = 29;
 pub const _SC_XOPEN_SHM : ::c_int = 30;
 
+#[cfg(not(target_os = "minix"))]
 pub const Q_GETQUOTA: ::c_int = 0x300;
+#[cfg(not(target_os = "minix"))]
 pub const Q_SETQUOTA: ::c_int = 0x400;
 
 pub const RTLD_GLOBAL: ::c_int = 0x100;
@@ -647,6 +651,7 @@ f! {
 
 #[link(name = "util")]
 extern {
+    #[cfg(not(target_os = "minix"))]
     pub fn mincore(addr: *mut ::c_void, len: ::size_t,
                    vec: *mut ::c_char) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__clock_getres50")]
@@ -656,6 +661,7 @@ extern {
     #[cfg_attr(target_os = "netbsd", link_name = "__clock_settime50")]
     pub fn clock_settime(clk_id: ::clockid_t, tp: *const ::timespec) -> ::c_int;
     pub fn __errno() -> *mut ::c_int;
+    #[cfg(not(target_os = "minix"))]
     pub fn shm_open(name: *const ::c_char, oflag: ::c_int, mode: ::mode_t)
                     -> ::c_int;
     pub fn memrchr(cx: *const ::c_void,
@@ -665,10 +671,12 @@ extern {
     pub fn mkostemps(template: *mut ::c_char,
                      suffixlen: ::c_int,
                      flags: ::c_int) -> ::c_int;
+    #[cfg(not(target_os = "minix"))]
     pub fn pwritev(fd: ::c_int,
                    iov: *const ::iovec,
                    iovcnt: ::c_int,
                    offset: ::off_t) -> ::ssize_t;
+    #[cfg(not(target_os = "minix"))]
     pub fn preadv(fd: ::c_int,
                   iov: *const ::iovec,
                   iovcnt: ::c_int,
@@ -676,12 +684,15 @@ extern {
     pub fn futimens(fd: ::c_int, times: *const ::timespec) -> ::c_int;
     pub fn utimensat(dirfd: ::c_int, path: *const ::c_char,
                      times: *const ::timespec, flag: ::c_int) -> ::c_int;
+    #[cfg(not(target_os = "minix"))]
     pub fn fdatasync(fd: ::c_int) -> ::c_int;
+    #[cfg(not(target_os = "minix"))]
     pub fn openpty(amaster: *mut ::c_int,
                    aslave: *mut ::c_int,
                    name: *mut ::c_char,
                    termp: *mut termios,
                    winp: *mut ::winsize) -> ::c_int;
+    #[cfg(not(target_os = "minix"))]
     pub fn forkpty(amaster: *mut ::c_int,
                    name: *mut ::c_char,
                    termp: *mut termios,
@@ -689,17 +700,23 @@ extern {
     pub fn getpriority(which: ::c_int, who: ::id_t) -> ::c_int;
     pub fn setpriority(which: ::c_int, who: ::id_t, prio: ::c_int) -> ::c_int;
 
+    #[cfg(not(target_os = "minix"))]
     pub fn mknodat(dirfd: ::c_int, pathname: *const ::c_char,
                    mode: ::mode_t, dev: dev_t) -> ::c_int;
+    #[cfg(not(target_os = "minix"))]
     pub fn mkfifoat(dirfd: ::c_int, pathname: *const ::c_char,
                     mode: ::mode_t) -> ::c_int;
+    #[cfg(not(target_os = "minix"))]
     pub fn sem_timedwait(sem: *mut sem_t,
                          abstime: *const ::timespec) -> ::c_int;
+    #[cfg(not(target_os = "minix"))]
     pub fn sem_getvalue(sem: *mut sem_t,
                         sval: *mut ::c_int) -> ::c_int;
+    #[cfg(not(target_os = "minix"))]
     pub fn pthread_condattr_setclock(attr: *mut pthread_condattr_t,
                                      clock_id: ::clockid_t) -> ::c_int;
     pub fn sethostname(name: *const ::c_char, len: ::size_t) -> ::c_int;
+    #[cfg(not(target_os = "minix"))]
     pub fn pthread_mutex_timedlock(lock: *mut pthread_mutex_t,
                                    abstime: *const ::timespec) -> ::c_int;
     pub fn pipe2(fds: *mut ::c_int, flags: ::c_int) -> ::c_int;
@@ -721,6 +738,9 @@ cfg_if! {
     } else if #[cfg(any(target_os = "openbsd", target_os = "bitrig"))] {
         mod openbsdlike;
         pub use self::openbsdlike::*;
+    } else if #[cfg(target_os = "minix")] {
+        mod minix;
+        pub use self::minix::*;
     } else {
         // Unknown target_os
     }

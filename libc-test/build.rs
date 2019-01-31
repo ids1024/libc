@@ -28,7 +28,8 @@ fn main() {
     let solaris = target.contains("solaris");
     let cloudabi = target.contains("cloudabi");
     let redox = target.contains("redox");
-    let bsdlike = freebsd || apple || netbsd || openbsd || dragonfly;
+    let minix = target.contains("minix");
+    let bsdlike = freebsd || apple || netbsd || openbsd || dragonfly || minix;
     let mut cfg = ctest::TestGenerator::new();
 
     // Pull in extra goodies
@@ -43,9 +44,12 @@ fn main() {
     } else if solaris {
         cfg.define("_XOPEN_SOURCE", Some("700"));
         cfg.define("__EXTENSIONS__", None);
+
         cfg.define("_LCONV_C99", None);
     } else if freebsd {
         cfg.define("_WITH_GETLINE", None);
+    } else if minix {
+        cfg.define("_MTHREADIFY_PTHREADS", None);
     }
 
     // Android doesn't actually have in_port_t but it's much easier if we
@@ -100,7 +104,11 @@ fn main() {
         cfg.header("netinet/tcp.h");
         cfg.header("netinet/udp.h");
         cfg.header("resolv.h");
-        cfg.header("pthread.h");
+        if minix {
+            cfg.header("minix/mthread.h");
+        } else {
+            cfg.header("pthread.h");
+        }
         cfg.header("dlfcn.h");
         cfg.header("signal.h");
         cfg.header("string.h");
@@ -320,13 +328,15 @@ fn main() {
         cfg.header("spawn.h");
     }
 
-    if netbsd {
+    if netbsd || minix {
         cfg.header("mqueue.h");
         cfg.header("ufs/ufs/quota.h");
         cfg.header("ufs/ufs/quota1.h");
         cfg.header("sys/extattr.h");
         cfg.header("sys/ioctl_compat.h");
+    }
 
+    if netbsd {
         // DCCP support
         cfg.header("netinet/dccp.h");
     }
@@ -351,7 +361,7 @@ fn main() {
         cfg.header("sys/loadavg.h");
     }
 
-    if linux || freebsd || dragonfly || netbsd || apple || emscripten {
+    if linux || freebsd || dragonfly || netbsd || apple || emscripten || minix {
         if !uclibc {
             cfg.header("aio.h");
         }
@@ -704,6 +714,7 @@ fn main() {
             {
                 true
             }
+            "_ALIGNBYTES" if minix => true,
             s if ios && s.starts_with("RTF_") => true,
             s if ios && s.starts_with("RTM_") => true,
             s if ios && s.starts_with("RTA_") => true,

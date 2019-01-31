@@ -30,3 +30,6 @@ rustc-dep-of-std = ['align', 'rustc-std-workspace-core']
 
 [workspace]
 members = ["libc-test"]
+
+[patch.crates-io]
+ctest = {path = "/home/ian/Devel/src/ctest"}

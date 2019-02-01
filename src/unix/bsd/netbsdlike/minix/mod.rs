@@ -8,8 +8,14 @@ pub type fsblkcnt_t = ::uint64_t;
 pub type fsfilcnt_t = ::uint64_t;
 pub type idtype_t = ::c_int;
 pub type mqd_t = ::c_int;
-type __pthread_spin_t = __cpu_simple_lock_nv_t;
-pub type pthread_mutex_t = usize;
+
+pub type pthread_attr_t = *mut ::c_void;
+pub type pthread_mutex_t = *mut ::c_void;
+pub type pthread_mutexattr_t = *mut ::c_void;
+pub type pthread_rwlock_t = *mut ::c_void;
+pub type pthread_rwlockattr_t = *mut ::c_void;
+pub type pthread_cond_t = *mut ::c_void;
+pub type pthread_condattr_t = *mut ::c_void;
 
 s! {
     pub struct dirent {
@@ -136,51 +142,8 @@ s! {
         pub si_signo: ::c_int,
         pub si_code: ::c_int,
         pub si_errno: ::c_int,
-        __pad1: ::c_int,
         pub si_addr: *mut ::c_void,
         __pad2: [u64; 13],
-    }
-
-    pub struct pthread_attr_t {
-        pta_magic: ::c_uint,
-        pta_flags: ::c_int,
-        pta_private: *mut ::c_void,
-    }
-
-    pub struct pthread_mutexattr_t {
-        ptma_magic: ::c_uint,
-        ptma_private: *mut ::c_void,
-    }
-
-    pub struct pthread_rwlockattr_t {
-        ptra_magic: ::c_uint,
-        ptra_private: *mut ::c_void,
-    }
-
-    pub struct pthread_cond_t {
-        ptc_magic: ::c_uint,
-        ptc_lock: __pthread_spin_t,
-        ptc_waiters_first: *mut u8,
-        ptc_waiters_last: *mut u8,
-        ptc_mutex: *mut ::pthread_mutex_t,
-        ptc_private: *mut ::c_void,
-    }
-
-    pub struct pthread_condattr_t {
-        ptca_magic: ::c_uint,
-        ptca_private: *mut ::c_void,
-    }
-
-    pub struct pthread_rwlock_t {
-        ptr_magic: ::c_uint,
-        ptr_interlock: __pthread_spin_t,
-        ptr_rblocked_first: *mut u8,
-        ptr_rblocked_last: *mut u8,
-        ptr_wblocked_first: *mut u8,
-        ptr_wblocked_last: *mut u8,
-        ptr_nreaders: ::c_uint,
-        ptr_owner: ::pthread_t,
-        ptr_private: *mut ::c_void,
     }
 
     pub struct dqblk {
@@ -486,16 +449,15 @@ pub const AF_BLUETOOTH: ::c_int = 31;
 pub const AF_IEEE80211: ::c_int = 32;
 pub const AF_MPLS: ::c_int = 33;
 pub const AF_ROUTE: ::c_int = 34;
-pub const AF_MAX: ::c_int = 36;
+pub const AF_MAX: ::c_int = 35;
 
 pub const NET_MAXID: ::c_int = AF_MAX;
 pub const NET_RT_DUMP: ::c_int = 1;
 pub const NET_RT_FLAGS: ::c_int = 2;
-//pub const NET_RT_OOOIFLIST: ::c_int = 3;
-pub const NET_RT_OOIFLIST: ::c_int = 4;
-pub const NET_RT_OIFLIST: ::c_int = 5;
-pub const NET_RT_IFLIST: ::c_int = 6;
-pub const NET_RT_MAXID: ::c_int = 7;
+pub const NET_RT_OOIFLIST: ::c_int = 3;
+pub const NET_RT_OIFLIST: ::c_int = 4;
+pub const NET_RT_IFLIST: ::c_int = 5;
+pub const NET_RT_MAXID: ::c_int = 5;
 
 pub const PF_OROUTE: ::c_int = AF_OROUTE;
 pub const PF_ARP: ::c_int = AF_ARP;
@@ -819,7 +781,7 @@ pub const SIGEV_NONE: ::c_int = 0;
 pub const SIGEV_SIGNAL: ::c_int = 1;
 pub const SIGEV_THREAD: ::c_int = 2;
 
-pub const WSTOPPED: ::c_int = 0x00000002; // same as WUNTRACED
+pub const WSTOPPED: ::c_int = 0x0000007F; // same as WUNTRACED
 pub const WNOWAIT: ::c_int = 0x00010000;
 
 pub const B460800: ::speed_t = 460800;

@@ -134,7 +134,9 @@ fn main() {
         }
         cfg.header("sys/mount.h");
         cfg.header("sys/uio.h");
-        cfg.header("sched.h");
+        if !minix {
+            cfg.header("sched.h");
+        }
         cfg.header("termios.h");
         cfg.header("poll.h");
         cfg.header("syslog.h");

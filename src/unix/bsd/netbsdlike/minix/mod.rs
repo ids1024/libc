@@ -17,6 +17,9 @@ pub type pthread_rwlockattr_t = *mut ::c_void;
 pub type pthread_cond_t = *mut ::c_void;
 pub type pthread_condattr_t = *mut ::c_void;
 
+pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = (-1isize) as *mut _;
+pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = (-1isize) as *mut _;
+
 s! {
     pub struct dirent {
         pub d_fileno: ::ino_t,

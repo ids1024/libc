@@ -584,7 +584,6 @@ extern {
     #[cfg(not(target_os = "minix"))]
     pub fn faccessat(dirfd: ::c_int, pathname: *const ::c_char,
                      mode: ::c_int, flags: ::c_int) -> ::c_int;
-    #[cfg(not(target_os = "minix"))]
     pub fn pthread_create(native: *mut ::pthread_t,
                           attr: *const ::pthread_attr_t,
                           f: extern fn(*mut ::c_void) -> *mut ::c_void,

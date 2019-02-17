@@ -359,7 +359,7 @@ cfg_if! {
         #[link(name = "pthread")]
         extern {}
     } else if #[cfg(target_os = "minix")] {
-        #[link(name = "mthread")]
+        #[link(name = "pthread")]
         extern {}
     } else {
         #[link(name = "c")]
@@ -862,8 +862,10 @@ extern {
                                      stack_size: ::size_t) -> ::c_int;
     pub fn pthread_attr_setdetachstate(attr: *mut ::pthread_attr_t,
                                        state: ::c_int) -> ::c_int;
+    #[cfg_attr(target_os = "minix", link_name = "__pthread_detach")]
     pub fn pthread_detach(thread: ::pthread_t) -> ::c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__libc_thr_yield")]
+    #[cfg_attr(target_os = "minix", link_name = "pthread_yield_np")]
     pub fn sched_yield() -> ::c_int;
     pub fn pthread_key_create(key: *mut pthread_key_t,
                               dtor: Option<unsafe extern fn(*mut ::c_void)>)
@@ -879,13 +881,10 @@ extern {
     pub fn pthread_mutex_trylock(lock: *mut pthread_mutex_t) -> ::c_int;
     pub fn pthread_mutex_unlock(lock: *mut pthread_mutex_t) -> ::c_int;
 
-    #[cfg(not(target_os = "minix"))]
     pub fn pthread_mutexattr_init(attr: *mut pthread_mutexattr_t) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "pthread_mutexattr_destroy$UNIX2003")]
-    #[cfg(not(target_os = "minix"))]
     pub fn pthread_mutexattr_destroy(attr: *mut pthread_mutexattr_t) -> ::c_int;
-    #[cfg(not(target_os = "minix"))]
     pub fn pthread_mutexattr_settype(attr: *mut pthread_mutexattr_t,
                                      _type: ::c_int) -> ::c_int;
 
@@ -899,16 +898,13 @@ extern {
                              lock: *mut pthread_mutex_t) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "pthread_cond_timedwait$UNIX2003")]
-    #[cfg(not(target_os = "minix"))]
     pub fn pthread_cond_timedwait(cond: *mut pthread_cond_t,
                               lock: *mut pthread_mutex_t,
                               abstime: *const ::timespec) -> ::c_int;
     pub fn pthread_cond_signal(cond: *mut pthread_cond_t) -> ::c_int;
     pub fn pthread_cond_broadcast(cond: *mut pthread_cond_t) -> ::c_int;
     pub fn pthread_cond_destroy(cond: *mut pthread_cond_t) -> ::c_int;
-    #[cfg(not(target_os = "minix"))]
     pub fn pthread_condattr_init(attr: *mut pthread_condattr_t) -> ::c_int;
-    #[cfg(not(target_os = "minix"))]
     pub fn pthread_condattr_destroy(attr: *mut pthread_condattr_t) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "pthread_rwlock_init$UNIX2003")]
@@ -922,21 +918,17 @@ extern {
     pub fn pthread_rwlock_rdlock(lock: *mut pthread_rwlock_t) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "pthread_rwlock_tryrdlock$UNIX2003")]
-    #[cfg(not(target_os = "minix"))]
     pub fn pthread_rwlock_tryrdlock(lock: *mut pthread_rwlock_t) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "pthread_rwlock_wrlock$UNIX2003")]
     pub fn pthread_rwlock_wrlock(lock: *mut pthread_rwlock_t) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "pthread_rwlock_trywrlock$UNIX2003")]
-    #[cfg(not(target_os = "minix"))]
     pub fn pthread_rwlock_trywrlock(lock: *mut pthread_rwlock_t) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "pthread_rwlock_unlock$UNIX2003")]
     pub fn pthread_rwlock_unlock(lock: *mut pthread_rwlock_t) -> ::c_int;
-    #[cfg(not(target_os = "minix"))]
     pub fn pthread_rwlockattr_init(attr: *mut pthread_rwlockattr_t) -> ::c_int;
-    #[cfg(not(target_os = "minix"))]
     pub fn pthread_rwlockattr_destroy(attr: *mut pthread_rwlockattr_t)
                                       -> ::c_int;
 

@@ -543,11 +543,9 @@ extern {
     #[cfg(not(target_os = "minix"))]
     pub fn sem_open(name: *const ::c_char, oflag: ::c_int, ...) -> *mut sem_t;
     pub fn getgrnam(name: *const ::c_char) -> *mut ::group;
-    #[cfg(not(target_os = "minix"))]
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
                link_name = "pthread_cancel$UNIX2003")]
     pub fn pthread_cancel(thread: ::pthread_t) -> ::c_int;
-    #[cfg(not(target_os = "minix"))]
     pub fn pthread_kill(thread: ::pthread_t, sig: ::c_int) -> ::c_int;
     #[cfg(not(target_os = "minix"))]
     pub fn sem_unlink(name: *const ::c_char) -> ::c_int;
@@ -572,7 +570,6 @@ extern {
     #[cfg(not(target_os = "minix"))]
     pub fn sigwait(set: *const sigset_t,
                    sig: *mut ::c_int) -> ::c_int;
-    #[cfg(not(target_os = "minix"))]
     pub fn pthread_atfork(prepare: Option<unsafe extern fn()>,
                           parent: Option<unsafe extern fn()>,
                           child: Option<unsafe extern fn()>) -> ::c_int;

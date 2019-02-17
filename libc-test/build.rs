@@ -49,7 +49,7 @@ fn main() {
     } else if freebsd {
         cfg.define("_WITH_GETLINE", None);
     } else if minix {
-        cfg.define("_MTHREADIFY_PTHREADS", None);
+        cfg.define("_POSIX_THREAD_SYSCALL_SOFT", Some("0"));
     }
 
     // Android doesn't actually have in_port_t but it's much easier if we
@@ -104,11 +104,7 @@ fn main() {
         cfg.header("netinet/tcp.h");
         cfg.header("netinet/udp.h");
         cfg.header("resolv.h");
-        if minix {
-            cfg.header("minix/mthread.h");
-        } else {
-            cfg.header("pthread.h");
-        }
+        cfg.header("pthread.h");
         cfg.header("dlfcn.h");
         cfg.header("signal.h");
         cfg.header("string.h");
@@ -873,6 +869,9 @@ fn main() {
             // Removed in OpenBSD 6.5
             // https://marc.info/?l=openbsd-cvs&m=154723400730318
             "mincore" if openbsd => true,
+
+            // Defined as a macro
+            "pthread_detach" if minix => true,
 
             _ => false,
         }

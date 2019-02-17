@@ -1,4 +1,5 @@
 use dox::mem;
+use core::ptr::null_mut;
 
 pub type clock_t = ::c_uint;
 pub type suseconds_t = ::c_int;
@@ -17,8 +18,14 @@ pub type pthread_rwlockattr_t = *mut ::c_void;
 pub type pthread_cond_t = *mut ::c_void;
 pub type pthread_condattr_t = *mut ::c_void;
 
-pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = (-1isize) as *mut _;
-pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = (-1isize) as *mut _;
+pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = null_mut();
+pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = null_mut();
+pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = null_mut();
+
+pub const PTHREAD_MUTEX_DEFAULT: ::c_int = 1;
+pub const PTHREAD_MUTEX_RECURSIVE: ::c_int = 2;
+pub const PTHREAD_MUTEX_NORMAL: ::c_int = 3;
+pub const PTHREAD_MUTEX_ERRORCHECK: ::c_int = 4;
 
 s! {
     pub struct dirent {

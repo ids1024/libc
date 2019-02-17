@@ -32,4 +32,4 @@ rustc-dep-of-std = ['align', 'rustc-std-workspace-core']
 members = ["libc-test"]
 
 [patch.crates-io]
-ctest = {path = "/home/ian/Devel/src/ctest"}
+ctest = {git = "https://github.com/ids1024/ctest", branch = "minix"}

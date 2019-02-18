@@ -153,7 +153,7 @@ s! {
         pub si_code: ::c_int,
         pub si_errno: ::c_int,
         pub si_addr: *mut ::c_void,
-        __pad2: [u64; 13],
+        __pad2: [u64; 14],
     }
 
     pub struct dqblk {
@@ -223,6 +223,7 @@ s! {
         pub ifi_lastchange: ::timespec,
     }
 
+    #[repr(align(8))]
     pub struct if_msghdr {
         pub ifm_msglen: ::c_ushort,
         pub ifm_version: ::c_uchar,
@@ -467,7 +468,7 @@ pub const NET_RT_FLAGS: ::c_int = 2;
 pub const NET_RT_OOIFLIST: ::c_int = 3;
 pub const NET_RT_OIFLIST: ::c_int = 4;
 pub const NET_RT_IFLIST: ::c_int = 5;
-pub const NET_RT_MAXID: ::c_int = 5;
+pub const NET_RT_MAXID: ::c_int = 6;
 
 pub const PF_OROUTE: ::c_int = AF_OROUTE;
 pub const PF_ARP: ::c_int = AF_ARP;
@@ -482,7 +483,7 @@ pub const MSG_WAITFORONE: ::c_int = 0x2000;
 //pub const MSG_NOTIFICATION: ::c_int = 0x4000;
 
 pub const SCM_TIMESTAMP: ::c_int = 0x08;
-pub const SCM_CREDS: ::c_int = 0x10;
+pub const SCM_CREDS: ::c_int = 0x04;
 
 pub const O_DSYNC : ::c_int = 0x10000;
 
@@ -569,7 +570,7 @@ pub const _SC_SCHED_RT_TS : ::c_int = 2001;
 pub const _SC_SCHED_PRI_MIN : ::c_int = 2002;
 pub const _SC_SCHED_PRI_MAX : ::c_int = 2003;
 
-pub const FD_SETSIZE: usize = 0x100;
+pub const FD_SETSIZE: usize = 255;
 
 pub const ST_NOSUID: ::c_ulong = 8;
 
@@ -806,7 +807,7 @@ pub const SOCK_CLOEXEC: ::c_int = 0x10000000;
 pub const SOCK_NONBLOCK: ::c_int = 0x20000000;
 
 pub const FIONCLEX: ::c_ulong = 0x20006602;
-pub const FIONREAD: ::c_ulong = 0x4004667f;
+pub const FIONREAD: ::c_ulong = 0x40046601;
 pub const FIOASYNC: ::c_ulong = 0x8004667d;
 pub const FIOSETOWN: ::c_ulong = 0x8004667c;
 pub const FIOGETOWN: ::c_ulong = 0x4004667b;

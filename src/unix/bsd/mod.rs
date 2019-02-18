@@ -67,9 +67,12 @@ s! {
         #[cfg(all(target_pointer_width = "64",
                   any(target_os = "freebsd", target_os = "dragonfly")))]
         fds_bits: [i64; FD_SETSIZE / 64],
-        #[cfg(not(all(target_pointer_width = "64",
-                      any(target_os = "freebsd", target_os = "dragonfly"))))]
+        #[cfg(not(any(all(target_pointer_width = "64",
+                      any(target_os = "freebsd", target_os = "dragonfly")), 
+                      target_os = "minix")))]
         fds_bits: [i32; FD_SETSIZE / 32],
+        #[cfg(target_os = "minix")]
+        fds_bits: [i32; (FD_SETSIZE + 1) / 32],
     }
 
     pub struct tm {
@@ -333,7 +336,10 @@ pub const LOG_PERROR: ::c_int = 0x20;
 pub const TCP_NODELAY: ::c_int = 1;
 pub const TCP_MAXSEG: ::c_int = 2;
 
+#[cfg(not(target_os = "minix"))]
 pub const PIPE_BUF: usize = 512;
+#[cfg(not(target_os = "minix"))]
+pub const PIPE_BUF: usize = 32768;
 
 pub const POLLIN: ::c_short = 0x1;
 pub const POLLPRI: ::c_short = 0x2;

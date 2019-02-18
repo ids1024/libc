@@ -359,6 +359,8 @@ cfg_if! {
         #[link(name = "pthread")]
         extern {}
     } else if #[cfg(target_os = "minix")] {
+        #[link(name = "c")]
+        #[link(name = "m")]
         #[link(name = "pthread")]
         extern {}
     } else {

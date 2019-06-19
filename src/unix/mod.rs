@@ -706,7 +706,6 @@ extern {
                link_name = "getopt$UNIX2003")]
     pub fn getopt(argc: ::c_int, argv: *const *mut c_char,
                   optstr: *const c_char) -> ::c_int;
-
     #[cfg(not(target_os = "minix"))]
     pub fn getpgid(pid: pid_t) -> pid_t;
     pub fn getpgrp() -> pid_t;
@@ -933,9 +932,6 @@ extern {
     pub fn pthread_rwlockattr_init(attr: *mut pthread_rwlockattr_t) -> ::c_int;
     pub fn pthread_rwlockattr_destroy(attr: *mut pthread_rwlockattr_t)
                                       -> ::c_int;
-
-
-
     #[cfg_attr(all(target_os = "linux", not(target_env = "musl")),
                link_name = "__xpg_strerror_r")]
     pub fn strerror_r(errnum: ::c_int, buf: *mut c_char,
@@ -1038,6 +1034,7 @@ extern {
     pub fn setlocale(category: ::c_int,
                      locale: *const ::c_char) -> *mut ::c_char;
     pub fn localeconv() -> *mut lconv;
+
     #[cfg(not(target_os = "minix"))]
     pub fn sem_destroy(sem: *mut sem_t) -> ::c_int;
     #[cfg_attr(all(target_os = "macos", target_arch = "x86"),
@@ -1053,7 +1050,6 @@ extern {
                     pshared: ::c_int,
                     value: ::c_uint)
                     -> ::c_int;
-
     pub fn statvfs(path: *const c_char, buf: *mut statvfs) -> ::c_int;
     pub fn fstatvfs(fd: ::c_int, buf: *mut statvfs) -> ::c_int;
 

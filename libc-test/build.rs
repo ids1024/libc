@@ -44,7 +44,6 @@ fn main() {
     } else if solaris {
         cfg.define("_XOPEN_SOURCE", Some("700"));
         cfg.define("__EXTENSIONS__", None);
-
         cfg.define("_LCONV_C99", None);
     } else if freebsd {
         cfg.define("_WITH_GETLINE", None);

@@ -238,7 +238,10 @@ pub const LC_MESSAGES: ::c_int = 6;
 
 pub const FIOCLEX: ::c_ulong = 0x20006601;
 pub const FIONCLEX: ::c_ulong = 0x20006602;
+#[cfg(not(target_os = "minix"))]
 pub const FIONREAD: ::c_ulong = 0x4004667f;
+#[cfg(target_os = "minix")]
+pub const FIONREAD: ::c_ulong = 0x40046601;
 pub const FIONBIO: ::c_ulong = 0x8004667e;
 pub const FIOASYNC: ::c_ulong = 0x8004667d;
 pub const FIOSETOWN: ::c_ulong = 0x8004667c;

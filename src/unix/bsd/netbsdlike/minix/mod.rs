@@ -1,12 +1,11 @@
-use dox::mem;
 use core::ptr::null_mut;
 
 pub type clock_t = ::c_uint;
 pub type suseconds_t = ::c_int;
 pub type dev_t = u64;
-pub type blksize_t = ::int32_t;
-pub type fsblkcnt_t = ::uint64_t;
-pub type fsfilcnt_t = ::uint64_t;
+pub type blksize_t = i32;
+pub type fsblkcnt_t = u64;
+pub type fsfilcnt_t = u64;
 pub type idtype_t = ::c_int;
 pub type mqd_t = ::c_int;
 
@@ -90,9 +89,9 @@ s! {
         pub st_size: ::off_t,
         pub st_blocks: ::blkcnt_t,
         pub st_blksize: ::blksize_t,
-        pub st_flags: ::uint32_t,
-        pub st_gen: ::uint32_t,
-        pub st_spare: [::uint32_t; 2],
+        pub st_flags: u32,
+        pub st_gen: u32,
+        pub st_spare: [u32; 2],
     }
 
     pub struct statvfs {
@@ -111,18 +110,18 @@ s! {
         pub f_favail: ::fsfilcnt_t,
         pub f_fresvd: ::fsfilcnt_t,
 
-        pub f_syncreads: ::uint64_t,
-        pub f_syncwrites: ::uint64_t,
+        pub f_syncreads: u64,
+        pub f_syncwrites: u64,
 
-        pub f_asyncreads: ::uint64_t,
-        pub f_asyncwrites: ::uint64_t,
+        pub f_asyncreads: u64,
+        pub f_asyncwrites: u64,
 
         pub f_fsidx: ::fsid_t,
         pub f_fsid: ::c_ulong,
         pub f_namemax: ::c_ulong,
         pub f_owner: ::uid_t,
 
-        pub f_spare: [::uint32_t; 4],
+        pub f_spare: [u32; 4],
 
         pub f_fstypename: [::c_char; 32],
         pub f_mntonname: [::c_char; 1024],
@@ -157,14 +156,14 @@ s! {
     }
 
     pub struct dqblk {
-        pub dqb_bhardlimit: ::uint32_t,
-        pub dqb_bsoftlimit: ::uint32_t,
-        pub dqb_curblocks: ::uint32_t,
-        pub dqb_ihardlimit: ::uint32_t,
-        pub dqb_isoftlimit: ::uint32_t,
-        pub dqb_curinodes: ::uint32_t,
-        pub dqb_btime: ::int32_t,
-        pub dqb_itime: ::int32_t,
+        pub dqb_bhardlimit: u32,
+        pub dqb_bsoftlimit: u32,
+        pub dqb_curblocks: u32,
+        pub dqb_ihardlimit: u32,
+        pub dqb_isoftlimit: u32,
+        pub dqb_curinodes: u32,
+        pub dqb_btime: i32,
+        pub dqb_itime: i32,
     }
 
     pub struct Dl_info {
@@ -266,6 +265,24 @@ s! {
         pub ar_hln: u8,
         pub ar_pln: u8,
         pub ar_op: u16,
+    }
+
+    #[repr(packed)]
+    pub struct in_addr {
+        pub s_addr: ::in_addr_t,
+    }
+
+    pub struct ip_mreq {
+        pub imr_multiaddr: in_addr,
+        pub imr_interface: in_addr,
+    }
+
+    pub struct sockaddr_in {
+        pub sin_len: u8,
+        pub sin_family: ::sa_family_t,
+        pub sin_port: ::in_port_t,
+        pub sin_addr: ::in_addr,
+        pub sin_zero: [i8; 8],
     }
 }
 
@@ -574,41 +591,41 @@ pub const FD_SETSIZE: usize = 255;
 
 pub const ST_NOSUID: ::c_ulong = 8;
 
-pub const EVFILT_AIO: ::uint32_t = 2;
-pub const EVFILT_PROC: ::uint32_t = 4;
-pub const EVFILT_READ: ::uint32_t = 0;
-pub const EVFILT_SIGNAL: ::uint32_t = 5;
-pub const EVFILT_TIMER: ::uint32_t = 6;
-pub const EVFILT_VNODE: ::uint32_t = 3;
-pub const EVFILT_WRITE: ::uint32_t = 1;
+pub const EVFILT_AIO: u32 = 2;
+pub const EVFILT_PROC: u32 = 4;
+pub const EVFILT_READ: u32 = 0;
+pub const EVFILT_SIGNAL: u32 = 5;
+pub const EVFILT_TIMER: u32 = 6;
+pub const EVFILT_VNODE: u32 = 3;
+pub const EVFILT_WRITE: u32 = 1;
 
-pub const EV_ADD: ::uint32_t = 0x1;
-pub const EV_DELETE: ::uint32_t = 0x2;
-pub const EV_ENABLE: ::uint32_t = 0x4;
-pub const EV_DISABLE: ::uint32_t = 0x8;
-pub const EV_ONESHOT: ::uint32_t = 0x10;
-pub const EV_CLEAR: ::uint32_t = 0x20;
-pub const EV_FLAG1: ::uint32_t = 0x2000;
-pub const EV_ERROR: ::uint32_t = 0x4000;
-pub const EV_EOF: ::uint32_t = 0x8000;
-pub const EV_SYSFLAGS: ::uint32_t = 0xf000;
+pub const EV_ADD: u32 = 0x1;
+pub const EV_DELETE: u32 = 0x2;
+pub const EV_ENABLE: u32 = 0x4;
+pub const EV_DISABLE: u32 = 0x8;
+pub const EV_ONESHOT: u32 = 0x10;
+pub const EV_CLEAR: u32 = 0x20;
+pub const EV_FLAG1: u32 = 0x2000;
+pub const EV_ERROR: u32 = 0x4000;
+pub const EV_EOF: u32 = 0x8000;
+pub const EV_SYSFLAGS: u32 = 0xf000;
 
-pub const NOTE_LOWAT: ::uint32_t = 0x00000001;
-pub const NOTE_DELETE: ::uint32_t = 0x00000001;
-pub const NOTE_WRITE: ::uint32_t = 0x00000002;
-pub const NOTE_EXTEND: ::uint32_t = 0x00000004;
-pub const NOTE_ATTRIB: ::uint32_t = 0x00000008;
-pub const NOTE_LINK: ::uint32_t = 0x00000010;
-pub const NOTE_RENAME: ::uint32_t = 0x00000020;
-pub const NOTE_REVOKE: ::uint32_t = 0x00000040;
-pub const NOTE_EXIT: ::uint32_t = 0x80000000;
-pub const NOTE_FORK: ::uint32_t = 0x40000000;
-pub const NOTE_EXEC: ::uint32_t = 0x20000000;
-pub const NOTE_PDATAMASK: ::uint32_t = 0x000fffff;
-pub const NOTE_PCTRLMASK: ::uint32_t = 0xf0000000;
-pub const NOTE_TRACK: ::uint32_t = 0x00000001;
-pub const NOTE_TRACKERR: ::uint32_t = 0x00000002;
-pub const NOTE_CHILD: ::uint32_t = 0x00000004;
+pub const NOTE_LOWAT: u32 = 0x00000001;
+pub const NOTE_DELETE: u32 = 0x00000001;
+pub const NOTE_WRITE: u32 = 0x00000002;
+pub const NOTE_EXTEND: u32 = 0x00000004;
+pub const NOTE_ATTRIB: u32 = 0x00000008;
+pub const NOTE_LINK: u32 = 0x00000010;
+pub const NOTE_RENAME: u32 = 0x00000020;
+pub const NOTE_REVOKE: u32 = 0x00000040;
+pub const NOTE_EXIT: u32 = 0x80000000;
+pub const NOTE_FORK: u32 = 0x40000000;
+pub const NOTE_EXEC: u32 = 0x20000000;
+pub const NOTE_PDATAMASK: u32 = 0x000fffff;
+pub const NOTE_PCTRLMASK: u32 = 0xf0000000;
+pub const NOTE_TRACK: u32 = 0x00000001;
+pub const NOTE_TRACKERR: u32 = 0x00000002;
+pub const NOTE_CHILD: u32 = 0x00000004;
 
 pub const TMP_MAX : ::c_uint = 308915776;
 
@@ -806,17 +823,6 @@ pub const CHWFLOW: ::tcflag_t = ::MDMBUF | ::CRTSCTS | ::CDTRCTS;
 pub const SOCK_CLOEXEC: ::c_int = 0x10000000;
 pub const SOCK_NONBLOCK: ::c_int = 0x20000000;
 
-pub const FIONCLEX: ::c_ulong = 0x20006602;
-pub const FIONREAD: ::c_ulong = 0x40046601;
-pub const FIOASYNC: ::c_ulong = 0x8004667d;
-pub const FIOSETOWN: ::c_ulong = 0x8004667c;
-pub const FIOGETOWN: ::c_ulong = 0x4004667b;
-pub const OFIOGETBMAP: ::c_ulong = 0xc004667a;
-pub const FIOGETBMAP: ::c_ulong = 0xc008667a;
-pub const FIONWRITE: ::c_ulong = 0x40046679;
-pub const FIONSPACE: ::c_ulong = 0x40046678;
-pub const FIBMAP: ::c_ulong = 0xc008667a;
-
 pub const SIGSTKSZ : ::size_t = 40960;
 
 pub const PT_DUMPCORE: ::c_int = 12;
@@ -846,7 +852,7 @@ f! {
         } else {
             0
         };
-        mem::size_of::<sockcred>() + mem::size_of::<::gid_t>() * ngrps
+        ::mem::size_of::<sockcred>() + ::mem::size_of::<::gid_t>() * ngrps
     }
 }
 

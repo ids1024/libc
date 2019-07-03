@@ -9,12 +9,14 @@ path = ".."
 default-features = false
 
 [build-dependencies]
-ctest = "0.2.8"
+cc = "1.0"
+ctest = {git = "https://github.com/ids1024/ctest", branch = "minix"}
 
 [features]
-default = [ "use_std" ]
-use_std = [ "libc/use_std" ]
+default = [ "std" ]
+std = [ "libc/std" ]
 align = [ "libc/align" ]
+extra_traits = [ "libc/extra_traits" ]
 
 [[test]]
 name = "main"
@@ -26,3 +28,27 @@ name = "linux-fcntl"
 path = "test/linux_fcntl.rs"
 harness = false
 
+[[test]]
+name = "linux-ipv6"
+path = "test/linux_ipv6.rs"
+harness = false
+
+[[test]]
+name = "linux-elf"
+path = "test/linux_elf.rs"
+harness = false
+
+[[test]]
+name = "linux-strerror_r"
+path = "test/linux_strerror_r.rs"
+harness = false
+
+[[test]]
+name = "linux-termios"
+path = "test/linux_termios.rs"
+harness = false
+
+[[test]]
+name = "cmsg"
+path = "test/cmsg.rs"
+harness = true

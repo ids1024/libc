@@ -668,7 +668,6 @@ extern {
     #[cfg(not(target_os = "minix"))]
     pub fn sem_timedwait(sem: *mut sem_t,
                          abstime: *const ::timespec) -> ::c_int;
-    #[cfg(not(target_os = "minix"))]
     pub fn sem_getvalue(sem: *mut sem_t,
                         sval: *mut ::c_int) -> ::c_int;
     #[cfg(not(target_os = "minix"))]
